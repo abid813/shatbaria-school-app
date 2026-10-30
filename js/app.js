@@ -250,10 +250,16 @@ function boot() {
   });
 
   const splash = document.getElementById('screen-splash');
+  const splashInstallBtn = document.getElementById('splashInstall');
   let left = false;
   const leave = () => {
     if (left) return; left = true;
     splash.classList.remove('active');
+    // স্প্ল্যাশের পর — ইনস্টল বাটন দেখাও (যদি PWA ইনস্টল পাওয়া যায়)
+    if (deferredInstall && !isStandalone()) {
+      showInstallPrompt();
+      return; // ইনস্টল প্রম্পট দেখাচ্ছি, অ্যাপে ঢোকা বন্ধ রাখি
+    }
     if (getProfile()) enterApp();
     else document.getElementById('screen-register').classList.add('active');
   };
@@ -412,7 +418,7 @@ function renderHome(profile) {
       // <p class="twins-note">👨‍👧‍👦 দুই সন্তান দুই শ্রেণিতে পড়লে যে-একজনের তথ্য দিয়ে শুরু করুন — হোমওয়ার্কে ঢুকে উপর থেকে <b>যেকোনো শ্রেণি</b> বেছে অন্য সন্তানের পড়াও দেখতে পারবেন।</p>
     </div>
 
-    ${deferredInstall ? `<button class="install-btn" id="installBtn">📲 ফোনের হোম স্ক্রিনে অ্যাপ রাখুন</button>` : ''}
+    ${deferredInstall && !isStandalone() ? `<button class="install-btn" id="installBtn">📲 ফোনের হোম স্ক্রিনে অ্যাপ রাখুন</button>` : ''}
 
     <button class="homework-hero" onclick="location.hash='#/homework'">
       <span class="hero-icon">📖</span>
@@ -935,12 +941,64 @@ async function adminComplaints(body) {
 /* ============================================================
    ইনস্টল + সার্ভিস ওয়ার্কার
    ============================================================ */
+
+/* অ্যাপ ইতিমধ্যে ইনস্টল হয়েছে কিনা চেক (standalone mode) */
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true ||
+    document.referrer.startsWith('android-app://');
+}
+
+/* স্প্ল্যাশের পর ইনস্টল প্রম্পট দেখাও */
+function showInstallPrompt() {
+  const splash = document.getElementById('screen-splash');
+  const btn = document.getElementById('splashInstall');
+  if (!btn) return;
+
+  // স্প্ল্যাশ স্ক্রিন রাখো, ইনস্টল বাটন দেখাও
+  splash.classList.add('active');
+  btn.hidden = false;
+
+  btn.addEventListener('click', async function handleInstall() {
+    btn.removeEventListener('click', handleInstall);
+    if (deferredInstall) {
+      btn.disabled = true;
+      btn.textContent = '⏳ ইনস্টল হচ্ছে…';
+      deferredInstall.prompt();
+      const choice = await deferredInstall.userChoice;
+      deferredInstall = null;
+      btn.hidden = true;
+      // ইনস্টল করুন চাপলে বা বাতিল করলে — অ্যাপে ঢুকে পড়ো
+      splash.classList.remove('active');
+      if (getProfile()) enterApp();
+      else document.getElementById('screen-register').classList.add('active');
+    } else {
+      btn.hidden = true;
+      splash.classList.remove('active');
+      if (getProfile()) enterApp();
+      else document.getElementById('screen-register').classList.add('active');
+    }
+  }, { once: true });
+}
+
 function setupInstall() {
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredInstall = e;
+    // স্প্ল্যাশ চলছে থাকলে কিছু করতে হবে না — leave() ফাংশন দেখাবে
+    // স্প্ল্যাশ শেষ হলে এবং অ্যাপে ঢুকে গেলে হোম পেজে বাটন দেখাও
+    const splash = document.getElementById('screen-splash');
+    if (splash && splash.classList.contains('active')) return; // স্প্ল্যাশ চলছে, পরে দেখাবে
     if (getProfile()) render();
   });
+
+  // অ্যাপ ইনস্টল হয়ে গেলে
+  window.addEventListener('appinstalled', () => {
+    deferredInstall = null;
+    const btn = document.getElementById('splashInstall');
+    if (btn) btn.hidden = true;
+  });
+
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('sw.js').catch(() => { });
   }
