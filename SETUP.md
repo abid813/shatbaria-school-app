@@ -242,3 +242,21 @@ firebase deploy
 | ফাইল | পরিবর্তন |
 |---|---|
 | `js/app.js` | `renderHome()` ফাংশনে `editProfile` বাটনের লেখা বদল + পুরনো কমেন্টেড লাইন সরানো |
+
+### 🆕 আপডেট ৩ — Service Worker cache fix (৩০ অক্টোবর ২০২৬, রাত)
+
+**কেন করতে হলো:**
+কিছু ফোনে (নরমাল Chrome) পুরনো Service Worker cache-এর কারণে নতুন আপডেট দেখা যাচ্ছিল না — Incognito-তে ঠিক ছিল।
+
+**কী পরিবর্তন হয়েছে:**
+- `sw.js`: cache version `satbaria-v3` করা হয়েছে
+- `app.js`, `styles.css`, `firebase-config.js`, `manifest.webmanifest`-এর জন্য **network-first** strategy — নতুন ভার্সন পাওয়া গেলে সেটাই লোড হবে
+- অন্যান্য স্ট্যাটিক ফাইল (ছবি, ফন্ট): cache-first থাকবে (দ্রুত লোডের জন্য)
+- `netlify.toml`: `app.js` এবং `styles.css`-এর HTTP `Cache-Control: no-cache` সেট করা হয়েছে
+
+**কোন ফাইলে কী পরিবর্তন:**
+
+| ফাইল | পরিবর্তন |
+|---|---|
+| `sw.js` | cache version v3 + core assets network-first strategy |
+| `netlify.toml` | `/js/app.js` এবং `/css/styles.css` no-cache headers যোগ |
