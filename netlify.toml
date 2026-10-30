@@ -16,3 +16,14 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
+
+# app.js আর css সবসময় নতুন ভার্সন আসুক (পুরনো ক্যাশ থেকে সমস্যা এড়াতে)
+[[headers]]
+  for = "/js/app.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/css/styles.css"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
