@@ -223,15 +223,24 @@ function playChime() {
     if (chimeCtx.state !== 'running') return; // এখনো অনুমতি নেই
     chimePlayed = true;
     const t0 = chimeCtx.currentTime;
-    [523.25, 659.25, 783.99].forEach((f, i) => { // C5-E5-G5 নরম ঘণ্টা
+    // মিষ্টি স্বাগত মেলোডি — পেন্টাটোনিক স্কেল (G4-A4-B4-D5-E5)
+    // নরম, উষ্ণ — তরুণ অভিভাবকদের জন্য
+    const notes = [
+      { f: 587.33, t: 0.00, d: 0.5, v: 0.10 },  // D5 — নরম শুরু
+      { f: 659.25, t: 0.12, d: 0.5, v: 0.09 },  // E5 — মিষ্টি হারমোনি
+      { f: 783.99, t: 0.24, d: 0.6, v: 0.08 },  // G5 — স্বাগত অনুভূতি
+      { f: 880.00, t: 0.36, d: 0.7, v: 0.06 },  // A5 — মৃদু রেজোলিউশন
+    ];
+    notes.forEach(n => {
       const o = chimeCtx.createOscillator(), g = chimeCtx.createGain();
-      o.type = 'sine'; o.frequency.value = f;
-      const s = t0 + i * 0.16;
+      o.type = 'sine';
+      o.frequency.value = n.f;
+      const s = t0 + n.t;
       g.gain.setValueAtTime(0, s);
-      g.gain.linearRampToValueAtTime(0.12, s + 0.03);
-      g.gain.exponentialRampToValueAtTime(0.001, s + 0.9);
+      g.gain.linearRampToValueAtTime(n.v, s + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.001, s + n.d);
       o.connect(g); g.connect(chimeCtx.destination);
-      o.start(s); o.stop(s + 1);
+      o.start(s); o.stop(s + n.d + 0.1);
     });
   } catch (e) { /* শব্দ না বাজলেও অ্যাপ চলবে */ }
 }
@@ -395,9 +404,9 @@ function renderHome(profile) {
     {
       title: '🗓️ সামনে কী আছে',
       items: [
+        { icon: '📚', label: 'উপবৃত্তি ও বই', go: '#/page/stipend' },
         { icon: '🎉', label: 'ছুটির তালিকা', go: '#/page/holidays' },
         { icon: '📝', label: 'পরীক্ষার রুটিন', go: '#/page/exam' },
-        { icon: '📚', label: 'উপবৃত্তি ও বই', go: '#/page/stipend' },
         { icon: '🏆', label: 'ফলাফল', soon: 'results' }
       ]
     },

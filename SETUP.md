@@ -260,3 +260,34 @@ firebase deploy
 |---|---|
 | `sw.js` | cache version v3 + core assets network-first strategy |
 | `netlify.toml` | `/js/app.js` এবং `/css/styles.css` no-cache headers যোগ |
+
+### 🆕 আপডেট ৪ — সাউন্ড, মেনু ক্রম, কালার, Netlify badge fix (৩০ অক্টোবর ২০২৬, রাত)
+
+**কী পরিবর্তন হয়েছে:**
+
+#### ১. মিষ্টি স্বাগত সাউন্ড
+- পুরনো C5-E5-G5 ঘণ্টা বদলে পেন্টাটোনিক মেলোডি (D5-E5-G5-A5) — নরম, উষ্ণ, মিষ্টি
+- `app.js`-এ `playChime()` ফাংশন আপডেট করা হয়েছে
+
+#### ২. "সামনে কী আছে" সেকশনের ক্রম পরিবর্তন
+- পুরনো ক্রম: ছুটির তালিকা → পরীক্ষার রুটিন → উপবৃত্তি ও বই → ফলাফল
+- নতুন ক্রম: **উপবৃত্তি ও বই** → ছুটির তালিকা → পরীক্ষার রুটিন → **ফলাফল**
+- `app.js`-এ `renderHome()` ফাংশনে `sections` array পরিবর্তন
+
+#### ৩. শিক্ষার্থীর নামের কালার গাঢ়
+- পুরনো: `var(--ink-soft)` (#546E7A — ফ্যাকাশে)
+- নতুন: `var(--green-dark)` (#1B5E20 — গাঢ় সবুজ), `font-weight: 600`, `font-size: .92rem`
+- `styles.css`-এ `.home-hello p` আপডেট
+
+#### ৪. Netlify badge overlap fix
+- `#homeFab` বাটন `bottom: 18px` → `bottom: 52px` (উপরে তোলা)
+- `#view` padding-bottom `90px` → `110px`
+- `#appFooter` padding-bottom `26px` → `60px`
+- CSS দিয়ে Netlify badge hide করার চেষ্টা
+
+**কোন ফাইলে কী পরিবর্তন:**
+
+| ফাইল | পরিবর্তন |
+|---|---|
+| `js/app.js` | `playChime()` মেলোডি বদল + `sections` array ক্রম পরিবর্তন |
+| `css/styles.css` | `.home-hello p` কালার + `#homeFab` bottom + `#view` padding + `#appFooter` padding + Netlify badge hide |
