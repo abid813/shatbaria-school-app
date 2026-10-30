@@ -1,5 +1,5 @@
-/* সার্ভিস ওয়ার্কার — অফলাইনে অ্যাপ খোলা রাখে */
-const CACHE = 'satbaria-v2';
+/* সার্ভিস ওয়ার্কার — অফলাইনে অ্যাপ খোলা রাখে + নতুন ভার্সন আসলে আপডেট হয় */
+const CACHE = 'satbaria-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -13,7 +13,11 @@ const APP_SHELL = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(APP_SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => c.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {
@@ -32,17 +36,45 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // পাতা (navigation): আগে নেট, না পেলে ক্যাশ — নতুন তথ্য যেন আসে
+  // পাতা (navigation): সরাসরি নেট থেকে আনো, সাথে cache আপডেট করো
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request)
-        .then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return res; })
+        .then(res => {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put('./index.html', copy));
+          return res;
+        })
         .catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  // স্ট্যাটিক + CDN (Firebase SDK, ফন্ট): আগে ক্যাশ, না থাকলে নেট থেকে এনে ক্যাশে রাখো
+  // app.js / styles.css / firebase-config.js / manifest — নেট থেকে আনো, পাশাপাশি cache আপডেট
+  const isCoreAsset = [
+    '/js/app.js',
+    '/css/styles.css',
+    '/js/firebase-config.js',
+    '/manifest.webmanifest',
+    '/sw.js'
+  ].some(p => url.pathname.endsWith(p));
+
+  if (isCoreAsset) {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // অন্যান্য স্ট্যাটিক + CDN (Firebase SDK, ফন্ট): আগে ক্যাশ, না থাকলে নেট থেকে এনে ক্যাশে রাখো
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
       if (res.ok && (url.origin === location.origin || url.hostname.includes('gstatic.com') || url.hostname.includes('fonts.g'))) {
