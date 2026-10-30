@@ -28,6 +28,14 @@
 #netlify-badge, .netlify-badge, [class*="netlify-badge"],
 iframe[src*="netlify"], div[id*="netlify"] { display: none !important; }
 
+/* নিচে ভেসে থাকা যেকোনো badge লুকানো */
+body > div:last-child, body > iframe:last-child,
+body > div[class*="badge"], body > iframe[class*="badge"] { display: none !important; }
+
+/* যদি hide না হয়, তাহলে পেছনে পাঠাও */
+body > div[style*="position: fixed"]:not(#homeFab):not(#appbar):not(.demo-banner):not(.inapp-banner),
+body > iframe[style*="position: fixed"] { z-index: -9999 !important; opacity: 0 !important; pointer-events: none !important; }
+
 html { font-size: 17px; }
 
 body {
@@ -36,6 +44,7 @@ body {
   color: var(--ink);
   line-height: 1.65;
   min-height: 100vh;
+  padding-bottom: 80px; /* Netlify badge-এর জন্য extra space */
 }
 
 button, input, textarea, select { font-family: inherit; font-size: inherit; }

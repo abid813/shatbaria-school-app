@@ -404,15 +404,15 @@ function renderHome(profile) {
     {
       title: '🗓️ সামনে কী আছে',
       items: [
-        { icon: '📚', label: 'উপবৃত্তি ও বই', go: '#/page/stipend' },
-        { icon: '🎉', label: 'ছুটির তালিকা', go: '#/page/holidays' },
         { icon: '📝', label: 'পরীক্ষার রুটিন', go: '#/page/exam' },
-        { icon: '🏆', label: 'ফলাফল', soon: 'results' }
+        { icon: '🏆', label: 'ফলাফল', soon: 'results' },
+        { icon: '🎉', label: 'ছুটির তালিকা', go: '#/page/holidays' }
       ]
     },
     {
       title: '🌟 পরে দেখার জিনিস',
       items: [
+        { icon: '📚', label: 'উপবৃত্তি ও বই', go: '#/page/stipend' },
         { icon: '🗓️', label: 'ক্যালেন্ডার', soon: 'calendar' },
         { icon: '📸', label: 'ছবির গ্যালারি', soon: 'gallery' }
       ]
