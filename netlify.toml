@@ -1,0 +1,18 @@
+# Netlify কনফিগারেশন — সাতবাড়িয়া স্কুল অ্যাপ
+# এটি স্ট্যাটিক সাইট, কোনো build কমান্ড লাগে না
+
+[build]
+  publish = "."
+  command = ""
+
+# স্প্ল্যাশ/SPA রাউটিং — সব রিকোয়েস্ট index.html-এ যাবে
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# sw.js কখনো ক্যাশ হবে না (সার্ভিস ওয়ার্কার আপডেটের জন্য)
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
