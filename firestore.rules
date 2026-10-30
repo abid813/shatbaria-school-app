@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // কেউ লগইন করেছে কি না (anonymous-ও ধরা হয়)
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // admins কালেকশনে এই ইউজারের ডকুমেন্ট আছে কি না
+    // (এই get() ক্লায়েন্টের read পারমিশনের উপর নির্ভর করে না)
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // অ্যাডমিন তালিকা: নিজেরটা শুধু নিজে পড়তে পারবে,
+    // লেখা কেবল Firebase কনসোল থেকে (কেউ নিজেকে অ্যাডমিন বানাতে পারবে না)
+    match /admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list: if isAdmin();
+      allow write: if false;
+    }
+
+    // হোমওয়ার্ক, নোটিশ, পাতা, রুটিন — পড়া সবার জন্য, লেখা শুধু অ্যাডমিন
+    match /homework/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /notices/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /pages/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /routines/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // অভিভাবকের রেজিস্ট্রেশন: যে কেউ (anonymous লগইন) লিখতে পারবে,
+    // পড়তে পারবে শুধু অ্যাডমিন
+    match /registrations/{doc} {
+      allow create: if signedIn();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // অভিযোগ: যে কেউ লিখতে পারবে, পড়তে পারবে শুধু অ্যাডমিন
+    match /complaints/{doc} {
+      allow create: if signedIn();
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

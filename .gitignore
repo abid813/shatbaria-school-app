@@ -1,0 +1,18 @@
+# IDE / এডিটর ফাইল
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS ফাইল
+Thumbs.db
+.DS_Store
+
+# Workbuddy AI মেমোরি
+.workbuddy-ai/
+
+# Playwright logs
+.playwright-cli/
+
+# Node (ভবিষ্যতে লাগলে)
+node_modules/

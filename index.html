@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2E7D32">
+  <meta name="description"
+    content="সাতবাড়িয়া সরকারি প্রাথমিক বিদ্যালয় — অভিভাবকদের জন্য হোমওয়ার্ক, নোটিশ, পরীক্ষার রুটিন ও স্কুলের সব খবর।">
+  <title>সাতবাড়িয়া সরকারি প্রাথমিক বিদ্যালয়</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- ডেমো মোড ব্যানার -->
+  <div id="demoBanner" class="demo-banner" hidden>
+    🔧 ডেমো মোড চলছে — Firebase সেটআপ হলে আসল তথ্য দেখাবে (SETUP.md দেখুন)
+  </div>
+
+  <!-- ইন-অ্যাপ ব্রাউজার সতর্কতা -->
+  <div id="inappBanner" class="inapp-banner" hidden>
+    ⚠️ অ্যাপটি ভালোভাবে খুলতে: ডানদিকে উপরের <b>⋮ (তিন ডট)</b> চাপুন → <b>"Chrome-এ খুলুন"</b> বা <b>"Open in
+      browser"</b> বেছে নিন
+  </div>
+
+  <!-- ==================== স্প্ল্যাশ ==================== -->
+  <section id="screen-splash" class="screen screen-splash active">
+    <div class="splash-inner" id="splashSkip">
+      <div class="splash-logo-wrap">
+        <img src="assets/logo.jpg" alt="স্কুলের লোগো" class="splash-logo">
+        <div class="splash-ring"></div>
+      </div>
+      <h1 class="splash-school">সাতবাড়িয়া সরকারি<br>প্রাথমিক বিদ্যালয়</h1>
+      <p class="splash-sub">স্থাপিত: ২০১১ খ্রি. &nbsp;|&nbsp; কালিয়া, নড়াইল</p>
+      <p class="splash-welcome">আপনাকে স্বাগতম</p>
+      <p class="splash-skip">চালিয়ে যেতে যেকোনো জায়গায় চাপ দিন</p>
+    </div>
+  </section>
+
+  <!-- ==================== প্রথমবার: ৪ প্রশ্ন ==================== -->
+  <section id="screen-register" class="screen screen-register">
+    <div class="register-card">
+      <button id="regCancel" class="reg-cancel" hidden aria-label="বন্ধ করুন">✕</button>
+      <img src="assets/logo.jpg" alt="" class="register-logo">
+      <h2>শিক্ষার্থীর তথ্য দিন</h2>
+      <p class="register-hint">এই তথ্য শুধু প্রথমবার লাগবে। পরের বার থেকে সরাসরি হোম পাতা খুলবে।</p>
+      <p class="twins-note">👨‍👧‍👦 দুই সন্তান দুই শ্রেণিতে পড়লে <b>যে-একজনের</b> তথ্য দিন — ভেতরে ঢুকে সব শ্রেণির
+        হোমওয়ার্কই দেখা যাবে।</p>
+
+      <form id="registerForm" novalidate>
+        <label class="field">
+          <span class="field-label">১. শিক্ষার্থীর নাম</span>
+          <input type="text" id="regStudent" placeholder="যেমন: ফাতেমা" autocomplete="off">
+        </label>
+
+        <label class="field">
+          <span class="field-label">২. বাবার নাম</span>
+          <input type="text" id="regFather" placeholder="যেমন: আব্দুল্লা" autocomplete="off">
+        </label>
+
+        <div class="field">
+          <span class="field-label">৩. শ্রেণি</span>
+          <div class="class-picker" id="regClassPicker">
+            <button type="button" class="class-btn" data-class="1">১ম</button>
+            <button type="button" class="class-btn" data-class="2">২য়</button>
+            <button type="button" class="class-btn" data-class="3">৩য়</button>
+            <button type="button" class="class-btn" data-class="4">৪র্থ</button>
+            <button type="button" class="class-btn" data-class="5">৫ম</button>
+          </div>
+        </div>
+
+        <label class="field">
+          <span class="field-label">৪. মোবাইল নম্বর</span>
+          <input type="tel" id="regPhone" placeholder="যেমন: 01700000000" inputmode="numeric" maxlength="11"
+            autocomplete="off">
+        </label>
+
+        <p class="form-error" id="regError" hidden></p>
+        <button type="submit" class="btn btn-primary btn-big">শুরু করুন ✅</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== অ্যাপ শেল ==================== -->
+  <header id="appbar" hidden>
+    <button id="backBtn" class="appbar-back" aria-label="পেছনে">←</button>
+    <img src="assets/logo.jpg" alt="" class="appbar-logo" width="34" height="34">
+    <div class="appbar-title" id="appbarTitle">হোম</div>
+  </header>
+
+  <main id="view" hidden></main>
+
+  <!-- প্রথম পাতায় ফিরে যাওয়ার বাটন (ভেতরের পাতাগুলোতে) -->
+  <button id="homeFab" hidden onclick="location.hash='#/'">🏠 প্রথম পাতায় ফিরে যান</button>
+
+
+  <footer id="appFooter" hidden>
+    <a href="#/admin" class="footer-admin">শিক্ষক / অ্যাডমিন লগইন</a>
+  </footer>
+
+  <!-- Firebase (CDN, compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/app.js" defer></script>
+</body>
+
+</html>
