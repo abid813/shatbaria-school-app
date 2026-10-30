@@ -414,8 +414,7 @@ function renderHome(profile) {
     <div class="home-hello">
       <h2>আসসালামু আলাইকুম! 🌿</h2>
       <p>${esc(profile.studentName)} — ${CLASS_LABEL[profile.classId]}</p>
-      <button class="edit-profile" id="editProfile">✏️ তথ্য বদলাতে চাইলে এখানে চাপুন</button>
-      // <p class="twins-note">👨‍👧‍👦 দুই সন্তান দুই শ্রেণিতে পড়লে যে-একজনের তথ্য দিয়ে শুরু করুন — হোমওয়ার্কে ঢুকে উপর থেকে <b>যেকোনো শ্রেণি</b> বেছে অন্য সন্তানের পড়াও দেখতে পারবেন।</p>
+      <button class="edit-profile" id="editProfile">✏️ শিক্ষার্থীর তথ্য পরিবর্তন করতে চান</button>
     </div>
 
     ${deferredInstall && !isStandalone() ? `<button class="install-btn" id="installBtn">📲 ফোনের হোম স্ক্রিনে অ্যাপ রাখুন</button>` : ''}
