@@ -414,7 +414,7 @@ function renderHome(profile) {
     <div class="home-hello">
       <h2>আসসালামু আলাইকুম! 🌿</h2>
       <p>${esc(profile.studentName)} — ${CLASS_LABEL[profile.classId]}</p>
-      <button class="edit-profile" id="editProfile">✏️ শিক্ষার্থীর তথ্য পরিবর্তন করতে চান</button>
+      <button class="edit-profile" id="editProfile">✏️ নাম ঠিকানা বদলাতে চাইলে</button>
     </div>
 
     ${deferredInstall && !isStandalone() ? `<button class="install-btn" id="installBtn">📲 ফোনের হোম স্ক্রিনে অ্যাপ রাখুন</button>` : ''}
